@@ -57,13 +57,16 @@ class HashMap {
     }
 
     // !!!growth!!!
-    // if (this.#size >= this.#loadFactor * this.#capacity) {
-    //   const bufferArr = this.#arr;
-
-    //   this.#capacity = 2 * this.#capacity;
-
-    //   for()
-    // }
+    if (this.#size >= this.#loadFactor * this.#capacity) {
+      const bufferArr = this.entries();
+      this.#capacity *= 2;
+      this.#size = 0;
+      this.#keyArr = [];
+      this.#arr = [];
+      bufferArr.forEach(([key, value]) => {
+        this.set(key, value);
+      });
+    }
   }
 
   get(key) {
@@ -115,6 +118,17 @@ class HashMap {
         return true;
       }
     }
+
+    if (this.#capacity > 8 && this.#size < this.#loadFactor * this.#capacity) {
+      const bufferArr = this.entries();
+      this.#size = 0;
+      this.#keyArr = [];
+      this.#capacity /= 2;
+      this.#arr = [];
+      bufferArr.forEach(([key, value]) => {
+        this.set(key, value);
+      });
+    }
   }
 
   // returns the number of stored keys in the hash map.
@@ -155,6 +169,10 @@ class HashMap {
     });
 
     return entryArr;
+  }
+
+  size() {
+    return this.#size;
   }
 }
 
