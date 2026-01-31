@@ -75,6 +75,8 @@ class HashMap {
     const listKey = list.findIndexBy((e) => e.key === key);
     if (listKey === -1) return false;
     list.removeAt(listKey);
+    if (list.size() === 0) this.#arr[index] = undefined;
+
     this.#size--;
 
     if (
