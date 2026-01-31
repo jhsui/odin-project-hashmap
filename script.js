@@ -5,7 +5,7 @@ class HashMap {
   #capacity = 16;
   #arr = [];
   #size = 0;
-  #keyArr = [];
+  //   #keyArr = [];
 
   hash(key) {
     let hashCode = 0;
@@ -33,12 +33,15 @@ class HashMap {
     if (this.has(key)) {
       const list = this.#arr[index];
 
-      for (let i = 0; i < list.size(); i++) {
-        if (key === list.at(i).key) {
-          list.at(i).value = value;
-          this.#size++;
-        }
-      }
+      //   for (let i = 0; i < list.size(); i++) {
+      //     if (key === list.at(i).key) {
+      //       list.at(i).value = value;
+      //     }
+      //   }
+      const entry = list.find((e) => e.key === key);
+
+      entry.value = value;
+      return;
     }
 
     if (this.#arr[index] === undefined) {
@@ -52,16 +55,15 @@ class HashMap {
       this.#size++;
     }
 
-    if (!this.#keyArr.includes(key)) {
-      this.#keyArr.push(key);
-    }
+    // if (!this.#keyArr.includes(key)) {
+    //   this.#keyArr.push(key);
+    // }
 
-    // !!!growth!!!
-    if (this.#size >= this.#loadFactor * this.#capacity) {
+    if (this.length() >= this.#loadFactor * this.#capacity) {
       const bufferArr = this.entries();
       this.#capacity *= 2;
       this.#size = 0;
-      this.#keyArr = [];
+      //   this.#keyArr = [];
       this.#arr = [];
       bufferArr.forEach(([key, value]) => {
         this.set(key, value);
@@ -75,11 +77,14 @@ class HashMap {
     const index = this.hash(key);
     const list = this.#arr[index];
 
-    for (let i = 0; i < list.size(); i++) {
-      if (list.at(i).key === key) {
-        return list.at(i).value;
-      }
-    }
+    // for (let i = 0; i < list.size(); i++) {
+    //   if (list.at(i).key === key) {
+    //     return list.at(i).value;
+    //   }
+    // }
+
+    const entry = list.find((e) => e.key === key);
+    return entry.value;
   }
 
   has(key) {
@@ -87,26 +92,32 @@ class HashMap {
       return false;
     }
 
-    // const index = this.hash(key);
-    // const list = this.#arr[index];
+    const index = this.hash(key);
+    const list = this.#arr[index];
 
     // for (let i = 0; i < list.size(); i++) {
-    //   if (this.list.at(i).key === key) {
+    //   if (list.at(i).key === key) {
     //     return true;
     //   }
     // }
-    // return false;
-
-    if (this.#keyArr.includes(key)) return true;
+    if (list === undefined) return false;
+    // what if the user store a pair whose value is undefined?/null???
+    if (list.find((e) => e.key === key)) {
+      return true;
+    }
 
     return false;
+
+    // if (this.#keyArr.includes(key)) return true;
+
+    // return false;
   }
 
   remove(key) {
     if (!this.has(key)) return false;
 
-    const keyIndex = this.#keyArr.indexOf(key);
-    this.#keyArr.splice(keyIndex, 1);
+    // const keyIndex = this.#keyArr.indexOf(key);
+    // this.#keyArr.splice(keyIndex, 1);
 
     const index = this.hash(key);
     const list = this.#arr[index];
@@ -119,10 +130,13 @@ class HashMap {
       }
     }
 
-    if (this.#capacity > 8 && this.#size < this.#loadFactor * this.#capacity) {
+    if (
+      this.#capacity > 16 &&
+      this.length() < (1 - this.#loadFactor) * this.#capacity
+    ) {
       const bufferArr = this.entries();
       this.#size = 0;
-      this.#keyArr = [];
+      //   this.#keyArr = [];
       this.#capacity /= 2;
       this.#arr = [];
       bufferArr.forEach(([key, value]) => {
@@ -133,18 +147,42 @@ class HashMap {
 
   // returns the number of stored keys in the hash map.
   length() {
-    return this.#keyArr.length;
+    // return this.#keyArr.length;
+
+    // if (this.#size === 0) return 0;
+
+    // const keyCount = 0;
+    // for (let i = 0; i < this.#arr.length; i++) {
+    //   if (this.#arr[i] !== undefined) {
+    //     keyCount += this.#arr[i].size();
+    //   }
+    // }
+    // return keyCount;
+    return this.#size;
   }
 
   clear() {
     this.#arr.length = 0;
-    this.#keyArr.length = 0;
+    // this.#keyArr.length = 0;
     this.#size = 0;
     this.#capacity = 16;
   }
 
   keys() {
-    return this.#keyArr;
+    // return this.#keyArr;
+
+    if (this.length() === 0) return [];
+
+    const keyArr = [];
+    for (let i = 0; i < this.#arr.length; i++) {
+      if (this.#arr[i] !== undefined) {
+        for (let j = 0; j < this.#arr[i].size(); j++) {
+          keyArr.push(this.#arr[i].at(j).key);
+        }
+      }
+    }
+
+    return keyArr;
   }
 
   values() {
@@ -171,9 +209,9 @@ class HashMap {
     return entryArr;
   }
 
-  size() {
-    return this.#size;
-  }
+  //   size() {
+  //     return this.#size;
+  //   }
 }
 
 export { HashMap };

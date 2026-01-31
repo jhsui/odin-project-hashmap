@@ -1,29 +1,8 @@
 class Node {
-  //   #value;
-  //   #nextNode;
-
   constructor(value = null, nextNode = null) {
     this.value = value;
     this.nextNode = nextNode;
-    // this.#value = value;
-    // this.#nextNode = nextNode;
   }
-
-  //   get value() {
-  //     return this.#value;
-  //   }
-
-  //   set value(x) {
-  //     this.#value = x;
-  //   }
-
-  //   get nextNode() {
-  //     return this.#nextNode;
-  //   }
-
-  //   set nextNode(node) {
-  //     this.#nextNode = node;
-  //   }
 }
 
 class LinkedList {
@@ -32,7 +11,6 @@ class LinkedList {
 
   constructor() {
     this.#firstNode = new Node();
-    // this.#size = 0;
   }
 
   size() {
@@ -66,8 +44,6 @@ class LinkedList {
 
     this.#size++;
   }
-
-  // how to make size filed private??
 
   head() {
     if (this.size() === 0) {
@@ -126,7 +102,7 @@ class LinkedList {
 
     let currentNode = this.#firstNode;
 
-    while (currentNode.nextNode !== null) {
+    while (currentNode !== null) {
       if (currentNode.value === value) {
         return true;
       } else {
@@ -137,6 +113,19 @@ class LinkedList {
     return false;
   }
 
+  find(predicate) {
+    let currentNode = this.#firstNode;
+
+    while (currentNode !== null) {
+      if (predicate(currentNode.value)) {
+        return currentNode.value;
+      }
+      currentNode = currentNode.nextNode;
+    }
+
+    return undefined;
+  }
+
   findIndex(value) {
     if (this.size() === 0) {
       return -1;
@@ -145,7 +134,7 @@ class LinkedList {
     let index = 0;
     let currentNode = this.#firstNode;
 
-    while (currentNode.nextNode !== null) {
+    while (currentNode !== null) {
       if (currentNode.value === value) {
         return index;
       } else {
