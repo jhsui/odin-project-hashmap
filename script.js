@@ -30,7 +30,7 @@ class HashMap {
     const list = this.#arr[index];
 
     if (list === undefined) {
-      const list = new LinkedList();
+      list = new LinkedList();
       list.append({ key, value });
       this.#arr[index] = list;
       this.#size++;
@@ -91,14 +91,14 @@ class HashMap {
   }
 
   remove(key) {
-    if (!this.has(key)) return false;
+    // if (!this.has(key)) return false;
 
     // const keyIndex = this.#keyArr.indexOf(key);
     // this.#keyArr.splice(keyIndex, 1);
 
     const index = this.hash(key);
     const list = this.#arr[index];
-
+    if (list === undefined) return false;
     // for (let i = 0; i < list.size(); i++) {
     //   if (list.at(i).key === key) {
     //     list.removeAt(i);
