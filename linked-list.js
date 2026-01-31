@@ -126,6 +126,21 @@ class LinkedList {
     return undefined;
   }
 
+  findIndexBy(predicate) {
+    let index = 0;
+    let currentNode = this.#firstNode;
+
+    while (currentNode !== null) {
+      if (predicate(currentNode.value)) {
+        return index;
+      }
+      currentNode = currentNode.nextNode;
+      index++;
+    }
+
+    return -1;
+  }
+
   findIndex(value) {
     if (this.size() === 0) {
       return -1;
@@ -228,6 +243,19 @@ class LinkedList {
 
     prevNode.nextNode = prevNode.nextNode.nextNode;
     this.#size--;
+  }
+
+  // return all the values in the linkedList as an array.
+  values() {
+    const arr = [];
+
+    let currentNode = this.#firstNode;
+    while (currentNode !== null) {
+      arr.push(currentNode.value);
+      currentNode = currentNode.nextNode;
+    }
+
+    return arr;
   }
 }
 

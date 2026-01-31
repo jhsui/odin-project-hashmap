@@ -72,7 +72,8 @@ class HashMap {
   }
 
   get(key) {
-    if (!this.has(key)) return null;
+    // if (this.length() === 0) return null;
+    // if (!this.has(key)) return null;
 
     const index = this.hash(key);
     const list = this.#arr[index];
@@ -83,34 +84,24 @@ class HashMap {
     //   }
     // }
 
+    if (list === undefined) return null;
+
     const entry = list.find((e) => e.key === key);
-    return entry.value;
+    // if (entry !== undefined) return entry.value;
+    // return null;
+
+    return entry !== undefined ? entry.value : null;
   }
 
   has(key) {
-    if (this.length() === 0) {
-      return false;
-    }
+    // if (this.length() === 0) {
+    //   return false;
+    // }
 
     const index = this.hash(key);
     const list = this.#arr[index];
 
-    // for (let i = 0; i < list.size(); i++) {
-    //   if (list.at(i).key === key) {
-    //     return true;
-    //   }
-    // }
-    if (list === undefined) return false;
-    // what if the user store a pair whose value is undefined?/null???
-    if (list.find((e) => e.key === key)) {
-      return true;
-    }
-
-    return false;
-
-    // if (this.#keyArr.includes(key)) return true;
-
-    // return false;
+    return list?.find((e) => e.key === key) !== undefined;
   }
 
   remove(key) {
@@ -122,13 +113,17 @@ class HashMap {
     const index = this.hash(key);
     const list = this.#arr[index];
 
-    for (let i = 0; i < list.size(); i++) {
-      if (list.at(i).key === key) {
-        list.removeAt(i);
-        this.#size--;
-        return true;
-      }
-    }
+    // for (let i = 0; i < list.size(); i++) {
+    //   if (list.at(i).key === key) {
+    //     list.removeAt(i);
+    //     this.#size--;
+    //     return true;
+    //   }
+    // }
+
+    const listKey = list.findIndexBy((e) => e.key === key);
+    list.removeAt(listKey);
+    this.#size--;
 
     if (
       this.#capacity > 16 &&
@@ -143,6 +138,8 @@ class HashMap {
         this.set(key, value);
       });
     }
+
+    return true;
   }
 
   // returns the number of stored keys in the hash map.
@@ -171,14 +168,19 @@ class HashMap {
   keys() {
     // return this.#keyArr;
 
-    if (this.length() === 0) return [];
+    // if (this.length() === 0) return [];
 
     const keyArr = [];
     for (let i = 0; i < this.#arr.length; i++) {
       if (this.#arr[i] !== undefined) {
-        for (let j = 0; j < this.#arr[i].size(); j++) {
-          keyArr.push(this.#arr[i].at(j).key);
-        }
+        // for (let j = 0; j < this.#arr[i].size(); j++) {
+        //   keyArr.push(this.#arr[i].at(j).key);
+        // }
+        const objArr = this.#arr[i].values();
+
+        objArr.forEach((e) => {
+          keyArr.push(e.key);
+        });
       }
     }
 
