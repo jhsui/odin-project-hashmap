@@ -27,43 +27,29 @@ class HashMap {
 
   set(key, value) {
     const index = this.hash(key);
+    const list = this.#arr[index];
 
-    // key-value pairs are stored as objects.
-    // if this hash map already contains this key:
-    if (this.has(key)) {
-      const list = this.#arr[index];
-
-      //   for (let i = 0; i < list.size(); i++) {
-      //     if (key === list.at(i).key) {
-      //       list.at(i).value = value;
-      //     }
-      //   }
-      const entry = list.find((e) => e.key === key);
-
-      entry.value = value;
-      return;
-    }
-
-    if (this.#arr[index] === undefined) {
+    if (list === undefined) {
       const list = new LinkedList();
       list.append({ key, value });
       this.#arr[index] = list;
       this.#size++;
     } else {
+      const entry = list.find((e) => e.key === key);
+      if (entry !== undefined) {
+        entry.value = value;
+        return;
+      }
+
       // there is already a list
-      this.#arr[index].append({ key, value });
+      list.append({ key, value });
       this.#size++;
     }
-
-    // if (!this.#keyArr.includes(key)) {
-    //   this.#keyArr.push(key);
-    // }
 
     if (this.length() >= this.#loadFactor * this.#capacity) {
       const bufferArr = this.entries();
       this.#capacity *= 2;
       this.#size = 0;
-      //   this.#keyArr = [];
       this.#arr = [];
       bufferArr.forEach(([key, value]) => {
         this.set(key, value);
@@ -122,6 +108,7 @@ class HashMap {
     // }
 
     const listKey = list.findIndexBy((e) => e.key === key);
+    if (listKey === -1) return false;
     list.removeAt(listKey);
     this.#size--;
 
@@ -188,25 +175,51 @@ class HashMap {
   }
 
   values() {
-    if (this.length() === 0) return [];
+    // if (this.length() === 0) return [];
 
     const valArr = [];
 
-    this.keys().forEach((key) => {
-      valArr.push(this.get(key));
-    });
+    // this.keys().forEach((key) => {
+    //   valArr.push(this.get(key));
+    // });
+
+    for (let i = 0; i < this.#arr.length; i++) {
+      if (this.#arr[i] !== undefined) {
+        // for (let j = 0; j < this.#arr[i].size(); j++) {
+        //   keyArr.push(this.#arr[i].at(j).key);
+        // }
+        const objArr = this.#arr[i].values();
+
+        objArr.forEach((e) => {
+          valArr.push(e.value);
+        });
+      }
+    }
 
     return valArr;
   }
 
   entries() {
-    if (this.length() === 0) return [];
+    // if (this.length() === 0) return [];
 
     const entryArr = [];
 
-    this.keys().forEach((key) => {
-      entryArr.push([key, this.get(key)]);
-    });
+    // this.keys().forEach((key) => {
+    //   entryArr.push([key, this.get(key)]);
+    // });
+
+    for (let i = 0; i < this.#arr.length; i++) {
+      if (this.#arr[i] !== undefined) {
+        // for (let j = 0; j < this.#arr[i].size(); j++) {
+        //   keyArr.push(this.#arr[i].at(j).key);
+        // }
+        const objArr = this.#arr[i].values();
+
+        objArr.forEach((e) => {
+          entryArr.push([e.key, e.value]);
+        });
+      }
+    }
 
     return entryArr;
   }
